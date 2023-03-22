@@ -1,17 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { customAlphabet, nanoid } from 'nanoid';
-import { MongoClient, WithId } from 'mongodb';
-
-const MONGO_URI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.9r76zdx.mongodb.net/?retryWrites=true&w=majority`;
-const client = new MongoClient(MONGO_URI);
-const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVXYZ0123456789';
-
-const createHash = (): string => {
-  const hashGenerator = customAlphabet(alphabet, 10);
-  const hash = hashGenerator();
-
-  return hash as string;
-};
+import { connectToDatabase, createLinkObject } from '@/utils/db-util';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
@@ -25,6 +13,8 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return;
   }
 
+  const client = connectToDatabase();
+
   try {
     client.connect();
     const db = client.db('url-shortener');
@@ -34,15 +24,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     let linkObject: any;
 
     if (!existingLink) {
-      const hash = createHash();
-
-      linkObject = {
-        id: nanoid(),
-        originalUrl,
-        url: hash,
-        link: `${process.env.HOST}${hash}`,
-      };
-
+      linkObject = createLinkObject(originalUrl);
       await collection.insertOne(linkObject);
       res.status(200).json({ message: 'URL created succesfully', linkObject });
     } else {

@@ -1,14 +1,10 @@
 import classes from '../styles/Homepage.module.css';
 import { FormEvent, useRef, useState } from 'react';
+import { LinkObject } from '@/utils/db-util';
 
 interface Data {
   message: string;
-  linkObject: {
-    id: string;
-    originalUrl: string;
-    url: string;
-    link: string;
-  };
+  linkObject: LinkObject;
 }
 
 const Homepage = () => {
