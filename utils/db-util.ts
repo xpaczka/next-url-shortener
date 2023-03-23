@@ -24,6 +24,13 @@ export const connectToDatabase = () => {
   return client;
 };
 
+export const getCollection = (client: MongoClient) => {
+  const db = client.db('url-shortener');
+  const collection = db.collection('links');
+
+  return collection;
+};
+
 export const createLinkObject = (originalUrl: string): LinkObject => {
   const hash = createHash();
   const linkObject = {
@@ -34,15 +41,4 @@ export const createLinkObject = (originalUrl: string): LinkObject => {
   };
 
   return linkObject as LinkObject;
-};
-
-export const getShortenedUrlData = async (url: string) => {
-  const client = connectToDatabase();
-  client.connect();
-  const db = client.db('url-shortener');
-  const collection = db.collection('links');
-
-  const data: any = await collection.findOne({ url });
-
-  return data as LinkObject;
 };

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { connectToDatabase, createLinkObject } from '@/utils/db-util';
+import { connectToDatabase, createLinkObject, getCollection } from '@/utils/db-util';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
@@ -17,8 +17,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     client.connect();
-    const db = client.db('url-shortener');
-    const collection = db.collection('links');
+    const collection = getCollection(client);
 
     const existingLink = await collection.findOne({ originalUrl });
     let linkObject: any;
