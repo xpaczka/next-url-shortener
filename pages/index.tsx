@@ -1,6 +1,7 @@
 import classes from '../styles/Homepage.module.css';
 import { FormEvent, useRef, useState } from 'react';
 import { LinkObject } from '@/utils/db-util';
+import Link from 'next/link';
 
 interface Data {
   message: string;
@@ -8,7 +9,7 @@ interface Data {
 }
 
 const Homepage = () => {
-  const [generatedUrl, setGeneratedUrl] = useState<string>('');
+  const [generatedUrl, setGeneratedUrl] = useState<LinkObject | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const formSubmitHandler = async (e: FormEvent) => {
@@ -26,17 +27,19 @@ const Homepage = () => {
     });
 
     const data: Data = await response.json();
-    setGeneratedUrl(data.linkObject.link);
+    setGeneratedUrl(data.linkObject);
   };
 
   return (
     <div>
       <h1 className={classes.header}>Next URL Shortener</h1>
       <form onSubmit={formSubmitHandler} className={classes.form}>
-        <input type='text' ref={inputRef} />
-        <button type='submit'>Generate</button>
+        <input className={classes.input} type='text' ref={inputRef} />
+        <button className={classes.button} type='submit'>
+          Generate
+        </button>
       </form>
-      <p>{generatedUrl}</p>
+      <Link href={generatedUrl?.link || '/'}>{generatedUrl?.link}</Link>
     </div>
   );
 };

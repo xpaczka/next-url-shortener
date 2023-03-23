@@ -6,4 +6,25 @@
 
 .header {
   text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.input {
+  font-size: 20px;
+  padding: 5px 10px;
+  min-width: 500px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.button {
+  font-size: 22px;
+  padding: 8px 25px;
+  border-radius: 6px;
+  outline: none;
+  border: none;
+  background: rgb(51, 160, 220);
+  font-family: 'Poppins', sans-serif;
+  color: #fff;
+  cursor: pointer;
 }
