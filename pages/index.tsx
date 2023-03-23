@@ -1,7 +1,7 @@
 import classes from '../styles/Homepage.module.css';
 import { FormEvent, useRef, useState } from 'react';
 import { LinkObject } from '@/utils/db-util';
-import Link from 'next/link';
+import Image from 'next/image';
 
 interface Data {
   message: string;
@@ -30,6 +30,17 @@ const Homepage = () => {
     setGeneratedUrl(data.linkObject);
   };
 
+  const copyToClipboardHandler = async () => {
+    if (!generatedUrl) return;
+
+    try {
+      await navigator.clipboard.writeText(generatedUrl.link);
+      console.log('Link copied to clipboard');
+    } catch (err: any) {
+      console.error(`Failed to copy: ${err}`);
+    }
+  };
+
   return (
     <div>
       <h1 className={classes.header}>Next URL Shortener</h1>
@@ -39,7 +50,13 @@ const Homepage = () => {
           Generate
         </button>
       </form>
-      <Link href={generatedUrl?.link || '/'}>{generatedUrl?.link}</Link>
+      <div className={classes['box-link']}>
+        <div className={classes['box-link-input']}>{generatedUrl?.link}</div>
+        <button className={classes['box-link-button']} onClick={copyToClipboardHandler}>
+          <Image src='link.svg' alt='Link' width={18} height={18} />
+          <p>Copy</p>
+        </button>
+      </div>
     </div>
   );
 };
